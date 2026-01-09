@@ -1,46 +1,61 @@
-# 🎓 Analisis Sentimen Layanan KAI Access Menggunakan IndoBERTweet dan Algoritma Random Forest
+# 🎓 Analisis Sentimen Layanan KAI Access Menggunakan Fine-Tuned IndoBERTweet
 
-Repositori ini berisi kode, dataset, dan dokumentasi pendukung untuk penelitian skripsi berjudul **"Analisis Sentimen Layanan KAI Access Menggunakan IndoBERTweet dan Algoritma Random Forest"**.  
-Penelitian ini dilakukan sebagai bagian dari tugas akhir **Program Studi Teknik Informatika, Fakultas Ilmu Komputer, Universitas Brawijaya**.
+Repositori ini berisi kode, dataset, dan dokumentasi pendukung untuk penelitian skripsi berjudul  
+**“Analisis Sentimen terhadap Layanan Kereta Api Indonesia menggunakan Fine-Tuned IndoBERTweet”**.  
+Penelitian ini disusun sebagai tugas akhir pada **Program Studi Teknik Informatika, Fakultas Ilmu Komputer, Universitas Brawijaya**.
 
 ---
 
 ## 📘 Deskripsi Singkat
-Penelitian ini bertujuan untuk **mengidentifikasi dan menganalisis sentimen masyarakat terhadap layanan KAI Access** berdasarkan data tweet berbahasa Indonesia.  
-Model utama yang digunakan adalah **IndoBERTweet** untuk ekstraksi fitur berbasis bahasa alami (embedding), yang kemudian diklasifikasikan menggunakan algoritma **Random Forest** guna memperoleh hasil analisis yang akurat dan interpretatif.
+Penelitian ini bertujuan untuk **menganalisis sentimen masyarakat terhadap layanan KAI Access** berdasarkan tweet berbahasa Indonesia.  
+Pendekatan yang digunakan adalah **fine-tuning model IndoBERTweet**, yaitu model transformer yang dilatih khusus pada korpus Twitter bahasa Indonesia, untuk melakukan klasifikasi sentimen secara end-to-end ke dalam tiga kelas: **positif, netral, dan negatif**.
+
+Penelitian ini juga mengevaluasi **pengaruh variasi preprocessing** serta **ketidakseimbangan distribusi data** terhadap kinerja model.
 
 ---
 
 ## 🧠 Metodologi
 1. **Pengumpulan Data**
-   - Data diambil dari platform **Twitter** menggunakan pustaka `snscrape`.
-   - Kata kunci pencarian: `"KAI Access"`, `"KAIACCESS"`, `"KAI"`, dan variasinya.
-   - Rentang waktu: Desember 2022 – Desember 2023.
+   - Data dikumpulkan dari platform **Twitter** menggunakan pustaka `snscrape`.
+   - Kata kunci terkait layanan KAI dan KAI Access.
+   - Rentang waktu data: **Desember 2022 – Desember 2024**.
 
 2. **Preprocessing**
-   - Case folding, tokenisasi, penghapusan tanda baca, URL, mention, dan stopword.
-   - Normalisasi teks informal ke bentuk baku.
+   - Case folding dan cleaning (URL, mention, simbol).
+   - Tokenisasi menggunakan tokenizer bawaan IndoBERTweet.
+   - Evaluasi beberapa skenario preprocessing:
+     - Tanpa stopword removal dan stemming (baseline)
+     - Dengan stopword removal
+     - Dengan stemming
+     - Kombinasi keduanya
 
-3. **Feature Extraction**
-   - Representasi vektor menggunakan **IndoBERTweet** pretrained model dari HuggingFace.
+3. **Fine-Tuning Model**
+   - Model **IndoBERTweet** di-fine-tune secara end-to-end untuk tugas klasifikasi sentimen.
+   - Optimasi hyperparameter meliputi learning rate, epoch, dan batch size.
 
-4. **Klasifikasi**
-   - Model **Random Forest** digunakan untuk klasifikasi sentimen (`positif`, `netral`, `negatif`).
+4. **Penanganan Data Tidak Seimbang**
+   - Eksplorasi beberapa teknik:
+     - Random oversampling  
+     - Class weighting  
+     - Text augmentation (random deletion & random swap)  
+     - Random undersampling  
+   - Teknik diterapkan pada skenario preprocessing terbaik.
 
 5. **Evaluasi**
-   - Menggunakan metrik **Accuracy**, **Precision**, **Recall**, dan **F1-Score**.
+   - Metrik evaluasi: **Accuracy, Precision, Recall, Macro F1-Score**, dan **Confusion Matrix**.
 
 ---
 
 ## ⚙️ Teknologi & Tools
 | Kategori | Teknologi |
-|-----------|------------|
+|--------|----------|
 | Bahasa Pemrograman | Python 3.10+ |
 | NLP Model | IndoBERTweet |
-| Machine Learning | Random Forest (Scikit-Learn) |
+| Framework | PyTorch, HuggingFace Transformers |
 | Data Crawling | snscrape |
-| Data Processing | Pandas, NumPy, Regex |
-| Visualization | Matplotlib, Seaborn |
+| Data Processing | Pandas, NumPy |
+| Evaluasi | Scikit-learn |
+| Visualisasi | Matplotlib |
 | Environment | Jupyter Notebook / VS Code |
 
 ---
@@ -100,12 +115,13 @@ jupyter notebook
 
 ---
 
-## 📊 Hasil & Temuan
+## 📊 Hasil & Temuan UTama
 
-* Model **IndoBERTweet + Random Forest** memberikan **akurasi tertinggi mencapai ±0.84**.
-* Sentimen **positif** mendominasi, terutama terkait kemudahan transaksi dan fitur digital KAI Access.
-* Sentimen **negatif** sering muncul pada isu *error system*, *delay update*, dan *kendala login akun*.
-
+* Skenario tanpa stopword removal dan stemming menghasilkan performa terbaik.
+* Model fine-tuned IndoBERTweet mencapai macro F1-score sebesar 0.7702 dan akurasi 0.8333.
+* Kelas positif merupakan kelas minoritas dan menunjukkan performa terendah.
+* Teknik penanganan data tidak seimbang belum mampu melampaui performa baseline, meskipun text augmentation menunjukkan stabilitas terbaik.
+* Preprocessing yang terlalu agresif cenderung menurunkan kualitas representasi konteks pada data Twitter.
 ---
 
 ## 📜 Lisensi
